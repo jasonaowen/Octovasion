@@ -12,15 +12,14 @@ target_compile_features (Test PRIVATE cxx_generalized_initializers
                                       cxx_range_for
                                       cxx_strong_enums)
 
-INCLUDE(FindPkgConfig)
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-INCLUDE_DIRECTORIES(
-  ${SDL2_INCLUDE_DIRS}
-)
-TARGET_LINK_LIBRARIES(
-  ${PROJECT_NAME}
-  ${SDL2_LIBRARIES}
-)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GIP_SOURCE_DIR}/cmake")
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+
+include_directories(${SDL2_INCLUDE_DIR}
+                    ${SDL2_IMAGE_INCLUDE_DIR})
+target_link_libraries(GIP ${SDL2_LIBRARY}
+                    ${SDL2_IMAGE_LIBRARIES})
 
 include (ExternalProject)
 find_package (Git REQUIRED)
