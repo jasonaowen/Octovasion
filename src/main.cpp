@@ -1,7 +1,39 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
 #include <unistd.h>
+#include "GameState.hpp"
+
+#ifdef __APPLE__
+#  include <SDL2_Image/SDL_image.h>
+#  define ASSET_DIR "../.."
+#else
+#  include <SDL2/SDL_image.h>
+#  define ASSET_DIR ".."
+#endif
+
+SDL_Rect gameRectToScreenRect(SDL_Rect screen, Rect world, Rect rect) {
+  float xScale = (float)(screen.w - screen.x) / (world.width - world.x);
+  float yScale = (float)(screen.h - screen.y) / (world.height - world.y);
+  return {
+    (int)(rect.x * xScale + screen.x),
+    (int)(rect.y * yScale + screen.y),
+    (int)(rect.width * xScale),
+    (int)(rect.height * yScale)
+  };
+}
+
+void render(SDL_Renderer* renderer, GameState state) {
+  int width, height;
+  SDL_GetRendererOutputSize(renderer, &width, &height);
+
+  // render paddle
+  SDL_SetRenderDrawColor(renderer, 0xA1, 0x57, 0xE8, 0xFF);
+  SDL_Rect paddleRect = gameRectToScreenRect({0, 0, width, height}, {0, 0, state.worldWidth, state.worldHeight}, state.paddle);
+  SDL_RenderFillRect(renderer, &paddleRect);
+
+  // render the bullets
+  // render babbies
+}
 
 int main(int argc, const char * argv[]) {
     if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER ) < 0)
@@ -17,7 +49,7 @@ int main(int argc, const char * argv[]) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 
-    const std::string filename = "../../purplefriend3x.png";
+    const std::string filename = ASSET_DIR "/purplefriend3x.png";
     SDL_Texture *octofriend = IMG_LoadTexture(renderer, filename.c_str());
     if ( octofriend == nullptr )
     {
@@ -37,6 +69,7 @@ int main(int argc, const char * argv[]) {
         h
     };
 
+    GameState state = GameState(100, 100); // todo: how big?
     bool gameIsRunning = true;
     while(gameIsRunning)
     {
@@ -49,8 +82,10 @@ int main(int argc, const char * argv[]) {
                 break;
             }
         }
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, octofriend, NULL, &rect);
+        render(renderer, state);
 
         SDL_RenderPresent(renderer);
     }

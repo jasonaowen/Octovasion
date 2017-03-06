@@ -20,8 +20,8 @@ bool operator==(const Point& lhs, const Point& rhs);
 struct Rect {
     int x,
         y,
-        height,
-        width;
+        width,
+        height;
 
 };
 bool operator==(const Rect& lhs, const Rect& rhs);
