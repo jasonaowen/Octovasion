@@ -65,7 +65,15 @@ void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
   }
 
   // render babbies
-
+  for (int i = 0; i < state.capturedOctobabies; i++) {
+    SDL_Rect babyRect = gameRectToScreenRect(screen, world, {
+      i % world.width,
+      i / world.width,
+      1,
+      1
+    });
+    SDL_RenderCopy(renderer, octofriend, NULL, &babyRect);
+  }
 }
 
 int main(int argc, const char * argv[]) {
