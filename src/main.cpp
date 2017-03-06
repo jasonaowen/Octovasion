@@ -22,16 +22,48 @@ SDL_Rect gameRectToScreenRect(SDL_Rect screen, Rect world, Rect rect) {
   };
 }
 
-void render(SDL_Renderer* renderer, GameState state) {
+void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
   int width, height;
   SDL_GetRendererOutputSize(renderer, &width, &height);
+  SDL_Rect screen = {
+    0,
+    0,
+    width,
+    height
+  };
+  Rect world = {
+    0,
+    0,
+    state.worldWidth,
+    state.worldHeight
+  };
+
+  int imgWidth; int imgHeight;
+  SDL_QueryTexture(octofriend, NULL, NULL, &imgWidth, &imgHeight);
+  SDL_Rect rect = {
+      (width - imgWidth)/2,
+      height - 2*imgHeight/3,
+      imgWidth,
+      imgHeight
+  };
+  SDL_RenderCopy(renderer, octofriend, NULL, &rect);
 
   // render paddle
   SDL_SetRenderDrawColor(renderer, 0xA1, 0x57, 0xE8, 0xFF);
-  SDL_Rect paddleRect = gameRectToScreenRect({0, 0, width, height}, {0, 0, state.worldWidth, state.worldHeight}, state.paddle);
+  SDL_Rect paddleRect = gameRectToScreenRect(screen, world, state.paddle);
   SDL_RenderFillRect(renderer, &paddleRect);
 
   // render the bullets
+  for (Point bullet : state.bullets) {
+    SDL_Rect bulletRect = gameRectToScreenRect(screen, world, {
+      bullet.x,
+      bullet.y,
+      1,
+      1
+    });
+    SDL_RenderCopy(renderer, octofriend, NULL, &bulletRect);
+  }
+
   // render babbies
 }
 
@@ -60,16 +92,8 @@ int main(int argc, const char * argv[]) {
         std::cerr << "Failed to load texture " << filename << " error : " << IMG_GetError() << std::endl;
     }
 
-    int w; int h;
-    SDL_QueryTexture(octofriend, NULL, NULL, &w, &h);
-    SDL_Rect rect = {
-        (winWidth - w)/2,
-        winHeight - 2*h/3,
-        w,
-        h
-    };
-
-    GameState state = GameState(100, 100); // todo: how big?
+    GameState state = GameState(10, 10); // todo: how big?
+    state.handleAction(Action::FIRE_LEFT_BULLET);
     bool gameIsRunning = true;
     while(gameIsRunning)
     {
@@ -84,8 +108,7 @@ int main(int argc, const char * argv[]) {
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, octofriend, NULL, &rect);
-        render(renderer, state);
+        render(renderer, state, octofriend);
 
         SDL_RenderPresent(renderer);
     }
