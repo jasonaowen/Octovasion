@@ -15,8 +15,16 @@ struct Point {
     int x;
     int y;
 };
-
 bool operator==(const Point& lhs, const Point& rhs);
+
+struct Rect {
+    int x,
+        y,
+        height,
+        width;
+
+};
+bool operator==(const Rect& lhs, const Rect& rhs);
 
 enum class Action {
     LEFT,
@@ -33,7 +41,8 @@ public:
     const int worldWidth, worldHeight;
     const Point rightTentacle, leftTentacle;
     int capturedOctobabies;
-    Point paddle;
+    Rect paddle;
+
     std::vector<Point> bullets;
 
     GameState(int width, int height);

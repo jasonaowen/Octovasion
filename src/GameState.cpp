@@ -14,9 +14,19 @@ GameState::GameState(int width, int height)
 , rightTentacle({width * 3 / 4, height * 3 / 4})
 , leftTentacle({width / 4, height * 3 / 4})
 , capturedOctobabies(0)
-, paddle({width/2, 0})
-, bullets({})
+, paddle({
+    width/2,
+    0,
+    width / 8 > 0 ? width / 8 : 1,
+    height / 16 > 0 ? height / 16 : 1
+  })
+, bullets()
 {}
+
+bool collisionDetection(Point bullet, Rect paddle) {
+    return bullet.x >= paddle.x && bullet.x < paddle.x + paddle.width
+        && bullet.y >= paddle.y && bullet.y < paddle.y + paddle.height;
+}
 
 void GameState::handleAction(Action action) {
     switch (action) {
@@ -36,6 +46,20 @@ void GameState::handleAction(Action action) {
         case Action::FIRE_LEFT_BULLET:
             fireBullet(leftTentacle);
             break;
+        case Action::CHECK_PADDLE_COLLISION:
+        {
+            auto i = bullets.begin();
+            while (i != bullets.end()) {
+                bool isCollided = collisionDetection(*i, paddle);
+                if (isCollided) {
+                    i = bullets.erase(i);
+                    capturedOctobabies++;
+                } else {
+                    i++;
+                }
+            }
+            break;
+        }
         default:
             break;
     }
@@ -45,6 +69,12 @@ void GameState::fireBullet(Point origin) {
     bullets.push_back(origin);
 }
 
+
 bool operator==(const Point& lhs, const Point& rhs) {
     return (lhs.x == rhs.x && lhs.y == rhs.y);
+}
+
+bool operator==(const Rect& lhs, const Rect& rhs) {
+    return (lhs.x == rhs.x && lhs.y == rhs.y &&
+            lhs.width == rhs.width && lhs.height && rhs.height);
 }

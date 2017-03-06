@@ -11,7 +11,7 @@
 
 TEST_CASE("moving left moves left") {
     GameState state = GameState(10, 10);
-    Point initialPaddle = state.paddle;
+    Rect initialPaddle = state.paddle;
 
     state.handleAction(Action::LEFT);
 
@@ -30,7 +30,7 @@ TEST_CASE("moving past wall does not move left") {
 
 TEST_CASE("moving right moves right") {
     GameState state = GameState(10, 10);
-    Point initialPaddle = state.paddle;
+    Rect initialPaddle = state.paddle;
 
     state.handleAction(Action::RIGHT);
 
@@ -67,4 +67,42 @@ TEST_CASE("fire left bullet fires a bullet from the left!!") {
 
     REQUIRE(state.bullets.size() == 1);
     CHECK(state.bullets[0] == state.leftTentacle);
+}
+
+TEST_CASE("collision with no bullets does nothing") {
+    GameState state = GameState(10, 10);
+
+    state.handleAction(Action::CHECK_PADDLE_COLLISION);
+
+    CHECK(state.bullets.size() == 0);
+    CHECK(state.capturedOctobabies == 0);
+}
+
+TEST_CASE("check collision does nothing if bullet outside of paddle") {
+    GameState state = GameState(10, 10);
+    state.paddle.x = 9;
+    state.bullets.push_back({ 8, 0 });
+
+    state.handleAction(Action::CHECK_PADDLE_COLLISION);
+
+    CHECK(state.bullets.size() == 1);
+    CHECK(state.capturedOctobabies == 0);
+}
+
+TEST_CASE("check collision detects a bullet in the paddle") {
+    GameState state = GameState(10, 10);
+    state.paddle.x = 9;
+    state.bullets.push_back({ 9, 0 });
+
+    state.handleAction(Action::CHECK_PADDLE_COLLISION);
+
+    CHECK(state.bullets.size() == 0);
+    CHECK(state.capturedOctobabies == 1);
+}
+
+TEST_CASE("tiny world creates non-zero paddle") {
+    GameState state = GameState(1, 1);
+
+    CHECK(state.paddle.height > 0);
+    CHECK(state.paddle.width > 0);
 }
