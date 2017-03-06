@@ -104,8 +104,13 @@ int main(int argc, const char * argv[]) {
     GameState state = GameState(20, 20);
     state.capturedOctobabies++;
     bool gameIsRunning = true;
+
+    const Uint32 fps = 40;
+    const Uint32 minframetime = 1000/fps;
+
     while(gameIsRunning)
     {
+        Uint32 frametime = SDL_GetTicks();
         SDL_Event event;
         while ( SDL_PollEvent(&event) )
         {
@@ -115,6 +120,13 @@ int main(int argc, const char * argv[]) {
                 break;
             }
         }
+
+        // fire bullets
+        if (SDL_GetTicks() - frametime < minframetime)
+        {
+            SDL_Delay(minframetime - (SDL_GetTicks() - frametime));
+        }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
         render(renderer, state, octofriend);
