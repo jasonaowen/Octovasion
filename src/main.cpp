@@ -108,6 +108,9 @@ int main(int argc, const char * argv[]) {
     const Uint32 fps = 40;
     const Uint32 minframetime = 1000/fps;
 
+    Uint32 frames = 0;
+    bool leftBullet = true;
+
     while(gameIsRunning)
     {
         Uint32 frametime = SDL_GetTicks();
@@ -121,15 +124,34 @@ int main(int argc, const char * argv[]) {
             }
         }
 
-        // fire bullets
         if (SDL_GetTicks() - frametime < minframetime)
         {
             SDL_Delay(minframetime - (SDL_GetTicks() - frametime));
         }
 
+
+        if (frames % 40 == 0)
+        {
+            // fire bullets
+            if (leftBullet)
+            {
+                state.handleAction(Action::FIRE_LEFT_BULLET);
+            } else
+            {
+                state.handleAction(Action::FIRE_RIGHT_BULLET);
+            }
+            leftBullet = !leftBullet;
+
+            // move bullets
+            state.handleAction(Action::CHECK_PADDLE_COLLISION);
+            state.handleAction(Action::ESCAPE_BULLET);
+            state.handleAction(Action::MOVE_BULLET);
+        }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
         render(renderer, state, octofriend);
+        frames++;
 
         SDL_RenderPresent(renderer);
     }
