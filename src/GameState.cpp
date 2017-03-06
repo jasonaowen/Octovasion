@@ -12,8 +12,14 @@
 GameState::GameState(int width, int height)
 : worldWidth(width)
 , worldHeight(height)
-, rightTentacle({width * 3 / 4, height * 3 / 4})
-, leftTentacle({width / 4, height * 3 / 4})
+, rightTentacle({
+    (int)(width * 0.69),
+    (int)(height * 5 / 8)
+  })
+, leftTentacle({
+    (int)(width * 0.31),
+    (int)(height * 5 / 8)
+  })
 , capturedOctobabies(0)
 , paddle({
     width/2,

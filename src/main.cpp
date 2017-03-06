@@ -92,8 +92,7 @@ int main(int argc, const char * argv[]) {
         std::cerr << "Failed to load texture " << filename << " error : " << IMG_GetError() << std::endl;
     }
 
-    GameState state = GameState(10, 10); // todo: how big?
-    state.handleAction(Action::FIRE_LEFT_BULLET);
+    GameState state = GameState(20, 20);
     bool gameIsRunning = true;
     while(gameIsRunning)
     {
