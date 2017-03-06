@@ -52,6 +52,7 @@ public:
 
 private:
     void fireBullet(Point origin);
+    void updatePaddleForEscapeBoundaryChange();
 };
 
 

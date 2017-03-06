@@ -62,6 +62,7 @@ void GameState::handleAction(Action action) {
                 if (isCollided) {
                     i = bullets.erase(i);
                     capturedOctobabies++;
+                    updatePaddleForEscapeBoundaryChange();
                 } else {
                     i++;
                 }
@@ -76,6 +77,7 @@ void GameState::handleAction(Action action) {
                     i = bullets.erase(i);
                     if (capturedOctobabies > 0) {
                         capturedOctobabies--;
+                        updatePaddleForEscapeBoundaryChange();
                     } else {
                         gameInProgress = false;
                     }
@@ -101,6 +103,10 @@ void GameState::fireBullet(Point origin) {
 
 int GameState::escapeBoundary() {
     return ceil((float)capturedOctobabies/worldWidth);
+}
+
+void GameState::updatePaddleForEscapeBoundaryChange() {
+  paddle.y = escapeBoundary();
 }
 
 bool operator==(const Point& lhs, const Point& rhs) {

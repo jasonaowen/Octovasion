@@ -65,6 +65,7 @@ void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
   }
 
   // render babbies
+
 }
 
 int main(int argc, const char * argv[]) {
@@ -93,6 +94,7 @@ int main(int argc, const char * argv[]) {
     }
 
     GameState state = GameState(20, 20);
+    state.capturedOctobabies++;
     bool gameIsRunning = true;
     while(gameIsRunning)
     {

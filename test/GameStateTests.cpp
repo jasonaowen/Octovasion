@@ -76,6 +76,7 @@ TEST_CASE("collision with no bullets does nothing") {
 
     CHECK(state.bullets.size() == 0);
     CHECK(state.capturedOctobabies == 0);
+    CHECK(state.paddle.y == 0);
 }
 
 TEST_CASE("check collision does nothing if bullet outside of paddle") {
@@ -87,17 +88,19 @@ TEST_CASE("check collision does nothing if bullet outside of paddle") {
 
     CHECK(state.bullets.size() == 1);
     CHECK(state.capturedOctobabies == 0);
+    CHECK(state.paddle.y == 0);
 }
 
 TEST_CASE("check collision detects a bullet in the paddle") {
     GameState state = GameState(10, 10);
     state.paddle.x = 9;
-    state.bullets.push_back({ 9, 0 });
+    state.bullets.push_back({ state.paddle.x, state.paddle.y });
 
     state.handleAction(Action::CHECK_PADDLE_COLLISION);
 
     CHECK(state.bullets.size() == 0);
     CHECK(state.capturedOctobabies == 1);
+    CHECK(state.paddle.y == 1);
 }
 
 TEST_CASE("escape boundary with no octobabies is 0") {
@@ -105,6 +108,7 @@ TEST_CASE("escape boundary with no octobabies is 0") {
     state.capturedOctobabies = 0;
 
     CHECK(state.escapeBoundary() == 0);
+    CHECK(state.paddle.y == 0);
 }
 
 TEST_CASE("escape boundary with <10 octobabies is 1") {
@@ -114,7 +118,7 @@ TEST_CASE("escape boundary with <10 octobabies is 1") {
     CHECK(state.escapeBoundary() == 1);
 }
 
-TEST_CASE("escape boundary with >10 octobabies is 1") {
+TEST_CASE("escape boundary with >10 octobabies is 2") {
     GameState state = GameState(10, 10);
     state.capturedOctobabies = 11;
 
