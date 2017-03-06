@@ -1,9 +1,13 @@
 cmake_minimum_required (VERSION 3.2)
 project (GIP CXX)
 add_executable (GIP src/main.cpp
+                    src/GameState.cpp
+                    src/GameState.hpp
                     )
 add_executable (Test test/catch.cpp
-                     test/example.cpp
+                     src/GameState.cpp
+                     src/GameState.hpp
+                     test/GameStateTests.cpp
                      )
 target_compile_features (GIP PRIVATE cxx_generalized_initializers
                                      cxx_range_for
