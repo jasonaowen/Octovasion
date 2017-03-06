@@ -42,11 +42,13 @@ public:
     const Point rightTentacle, leftTentacle;
     int capturedOctobabies;
     Rect paddle;
+    bool gameInProgress;
 
     std::vector<Point> bullets;
 
     GameState(int width, int height);
     void handleAction(Action action);
+    int escapeBoundary();
 
 private:
     void fireBullet(Point origin);

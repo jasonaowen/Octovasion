@@ -100,6 +100,59 @@ TEST_CASE("check collision detects a bullet in the paddle") {
     CHECK(state.capturedOctobabies == 1);
 }
 
+TEST_CASE("escape boundary with no octobabies is 0") {
+    GameState state = GameState(10, 10);
+    state.capturedOctobabies = 0;
+
+    CHECK(state.escapeBoundary() == 0);
+}
+
+TEST_CASE("escape boundary with <10 octobabies is 1") {
+    GameState state = GameState(10, 10);
+    state.capturedOctobabies = 1;
+
+    CHECK(state.escapeBoundary() == 1);
+}
+
+TEST_CASE("escape boundary with >10 octobabies is 1") {
+    GameState state = GameState(10, 10);
+    state.capturedOctobabies = 11;
+
+    CHECK(state.escapeBoundary() == 2);
+}
+
+TEST_CASE("check escaping bullet escapes") {
+    GameState state = GameState(10, 10);
+    state.bullets.push_back({ 0, 0 });
+
+    state.handleAction(Action::ESCAPE_BULLET);
+
+    CHECK(state.bullets.size() == 0);
+    CHECK(state.gameInProgress == false);
+}
+
+TEST_CASE("check rescue bullet rescues") {
+    GameState state = GameState(10, 10);
+    state.bullets.push_back({ 0, 0 });
+    state.capturedOctobabies = 1;
+
+    state.handleAction(Action::ESCAPE_BULLET);
+
+    CHECK(state.bullets.size() == 0);
+    CHECK(state.capturedOctobabies == 0);
+    CHECK(state.gameInProgress == true);
+}
+
+TEST_CASE("check move bullet moves bullet") {
+    GameState state = GameState(10, 10);
+    state.bullets.push_back({ 0, 9 });
+
+    state.handleAction(Action::MOVE_BULLET);
+
+    CHECK(state.bullets[0].y == 8);
+}
+
+
 TEST_CASE("tiny world creates non-zero paddle") {
     GameState state = GameState(1, 1);
 

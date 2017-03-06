@@ -7,6 +7,7 @@
 //
 
 #include "GameState.hpp"
+#include <math.h>
 
 GameState::GameState(int width, int height)
 : worldWidth(width)
@@ -20,6 +21,7 @@ GameState::GameState(int width, int height)
     width / 8 > 0 ? width / 8 : 1,
     height / 16 > 0 ? height / 16 : 1
   })
+, gameInProgress(true)
 , bullets()
 {}
 
@@ -60,6 +62,28 @@ void GameState::handleAction(Action action) {
             }
             break;
         }
+        case Action::ESCAPE_BULLET:
+        {
+            auto i = bullets.begin();
+            while (i != bullets.end()) {
+                if (i->y <= escapeBoundary()) {
+                    i = bullets.erase(i);
+                    if (capturedOctobabies > 0) {
+                        capturedOctobabies--;
+                    } else {
+                        gameInProgress = false;
+                    }
+                } else {
+                    i++;
+                }
+            }
+            break;
+        }
+        case Action::MOVE_BULLET:
+            for (Point &bullet : bullets) {
+                bullet.y -= 1;
+            }
+            break;
         default:
             break;
     }
@@ -69,6 +93,9 @@ void GameState::fireBullet(Point origin) {
     bullets.push_back(origin);
 }
 
+int GameState::escapeBoundary() {
+    return ceil((float)capturedOctobabies/worldWidth);
+}
 
 bool operator==(const Point& lhs, const Point& rhs) {
     return (lhs.x == rhs.x && lhs.y == rhs.y);
