@@ -2,13 +2,15 @@
 #include <SDL2/SDL.h>
 #include <unistd.h>
 #include "GameState.hpp"
+#include <map>
+#include <string>
 
 #ifdef __APPLE__
 #  include <SDL2_Image/SDL_image.h>
-#  define ASSET_DIR "../.."
+#  define ASSET_DIR "../../assets"
 #else
 #  include <SDL2/SDL_image.h>
-#  define ASSET_DIR ".."
+#  define ASSET_DIR "../assets"
 #endif
 
 SDL_Rect gameRectToScreenRect(SDL_Rect screen, Rect world, Rect rect) {
@@ -22,7 +24,7 @@ SDL_Rect gameRectToScreenRect(SDL_Rect screen, Rect world, Rect rect) {
   };
 }
 
-void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
+void render(SDL_Renderer* renderer, GameState state, std::map<std::string, SDL_Texture *> assets) {
   int width, height;
   SDL_GetRendererOutputSize(renderer, &width, &height);
   SDL_Rect screen = {
@@ -39,14 +41,14 @@ void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
   };
 
   int imgWidth; int imgHeight;
-  SDL_QueryTexture(octofriend, NULL, NULL, &imgWidth, &imgHeight);
+  SDL_QueryTexture(assets["purple"], NULL, NULL, &imgWidth, &imgHeight);
   SDL_Rect rect = {
       (width - imgWidth)/2,
       height - 2*imgHeight/3,
       imgWidth,
       imgHeight
   };
-  SDL_RenderCopy(renderer, octofriend, NULL, &rect);
+  SDL_RenderCopy(renderer, assets["purple"], NULL, &rect);
 
   // render paddle
   SDL_SetRenderDrawColor(renderer, 0xA1, 0x57, 0xE8, 0xFF);
@@ -61,7 +63,7 @@ void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
       1,
       1
     });
-    SDL_RenderCopy(renderer, octofriend, NULL, &bulletRect);
+    SDL_RenderCopy(renderer, assets["sunshine"], NULL, &bulletRect);
   }
 
   // render babbies
@@ -72,7 +74,7 @@ void render(SDL_Renderer* renderer, GameState state, SDL_Texture* octofriend) {
       1,
       1
     });
-    SDL_RenderCopy(renderer, octofriend, NULL, &babyRect);
+    SDL_RenderCopy(renderer, assets["pink"], NULL, &babyRect);
   }
 }
 
@@ -89,16 +91,25 @@ int main(int argc, const char * argv[]) {
     window = SDL_CreateWindow("GIP", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-
     const std::string filename = ASSET_DIR "/purplefriend3x.png";
-    SDL_Texture *octofriend = IMG_LoadTexture(renderer, filename.c_str());
-    if ( octofriend == nullptr )
-    {
-        char cwd[1024];
-        if (getcwd(cwd, sizeof(cwd)) != NULL)
-            fprintf(stdout, "Current working dir: %s\n", cwd);
+    std::map<std::string, SDL_Texture *> assets = {
+        {"purple", IMG_LoadTexture(renderer, ASSET_DIR "/purplefriend3x.png")},
+        {"pink", IMG_LoadTexture(renderer, ASSET_DIR "/pinkfriend.png")},
+        {"blue", IMG_LoadTexture(renderer, ASSET_DIR "/bluefriend.png")},
+        {"lime", IMG_LoadTexture(renderer, ASSET_DIR "/limefriend.png")},
+        {"sunshine", IMG_LoadTexture(renderer, ASSET_DIR "/sunshinefriend.png")},
+        {"skyblue", IMG_LoadTexture(renderer, ASSET_DIR "/skybluefriend.png")},
+    };
 
-        std::cerr << "Failed to load texture " << filename << " error : " << IMG_GetError() << std::endl;
+    for (auto const &asset: assets) {
+        if ( asset.second == nullptr )
+        {
+            char cwd[1024];
+            if (getcwd(cwd, sizeof(cwd)) != NULL)
+                fprintf(stdout, "Current working dir: %s\n", cwd);
+
+            std::cerr << "Failed to load texture " << asset.first << " error : " << IMG_GetError() << std::endl;
+        }
     }
 
     GameState state = GameState(20, 20);
@@ -150,7 +161,7 @@ int main(int argc, const char * argv[]) {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
-        render(renderer, state, octofriend);
+        render(renderer, state, assets);
         frames++;
 
         SDL_RenderPresent(renderer);
