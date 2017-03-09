@@ -37,10 +37,16 @@ bool collisionDetection(Point bullet, Rect paddle) {
 }
 
 void GameState::handleAction(Action action) {
-    if (gameInProgress == false) {
+    if (gameInProgress == false && action != Action::NEW_GAME) {
         return;
     }
     switch (action) {
+        case Action::NEW_GAME:
+            capturedOctobabies = 0;
+            gameInProgress = true;
+            bullets = {};
+            paddle.y = escapeBoundary();
+            break;
         case Action::LEFT:
             if (paddle.x > 0) {
                 paddle.x--;

@@ -140,6 +140,9 @@ int main(int argc, const char * argv[]) {
                 if (event.key.keysym.sym == SDLK_d) {
                     state.handleAction(Action::RIGHT);
                 }
+                if (event.key.keysym.sym == SDLK_n) {
+                    state.handleAction(Action::NEW_GAME);
+                }
             }
         }
 

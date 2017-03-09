@@ -27,6 +27,7 @@ struct Rect {
 bool operator==(const Rect& lhs, const Rect& rhs);
 
 enum class Action {
+    NEW_GAME,
     LEFT,
     RIGHT,
     FIRE_LEFT_BULLET,
