@@ -4,6 +4,7 @@
 #include "GameState.hpp"
 #include <map>
 #include <string>
+#include <cstdlib>
 
 #ifdef __APPLE__
 #  include <SDL2_Image/SDL_image.h>
@@ -119,7 +120,7 @@ int main(int argc, const char * argv[]) {
     const Uint32 minframetime = 1000/fps;
 
     Uint32 frames = 0;
-    bool leftBullet = true;
+    int chance = 3;
 
     while(gameIsRunning)
     {
@@ -147,23 +148,21 @@ int main(int argc, const char * argv[]) {
             SDL_Delay(minframetime - (SDL_GetTicks() - frametime));
         }
 
-
         if (frames % 40 == 0)
         {
-            // fire bullets
-            if (leftBullet)
-            {
+            if (rand() % chance == 0) {
                 state.handleAction(Action::FIRE_LEFT_BULLET);
-            } else
-            {
+            }
+
+            if (rand() % chance == 0) {
                 state.handleAction(Action::FIRE_RIGHT_BULLET);
             }
-            leftBullet = !leftBullet;
+        }
 
-            // move bullets
+        if (frames % 5 == 0) {
+            state.handleAction(Action::MOVE_BULLET);
             state.handleAction(Action::CHECK_PADDLE_COLLISION);
             state.handleAction(Action::ESCAPE_BULLET);
-            state.handleAction(Action::MOVE_BULLET);
         }
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
