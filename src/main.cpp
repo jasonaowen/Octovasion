@@ -113,7 +113,6 @@ int main(int argc, const char * argv[]) {
     }
 
     GameState state = GameState(20, 20);
-    state.capturedOctobabies++;
     bool gameIsRunning = true;
 
     const Uint32 fps = 40;

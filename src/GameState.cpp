@@ -37,6 +37,9 @@ bool collisionDetection(Point bullet, Rect paddle) {
 }
 
 void GameState::handleAction(Action action) {
+    if (gameInProgress == false) {
+        return;
+    }
     switch (action) {
         case Action::LEFT:
             if (paddle.x > 0) {
