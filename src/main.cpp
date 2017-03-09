@@ -121,6 +121,7 @@ int main(int argc, const char * argv[]) {
 
     Uint32 frames = 0;
     int chance = 2;
+    const Uint8 *keyboardState;
 
     while(gameIsRunning)
     {
@@ -133,23 +134,15 @@ int main(int argc, const char * argv[]) {
                 gameIsRunning = false;
                 break;
             }
-            if (event.type == SDL_KEYUP) {
-                if (event.key.keysym.sym == SDLK_a ||
-                    event.key.keysym.sym == SDLK_d) {
-                    state.handleAction(Action::CENTER);
-                }
-            }
-            if (event.type == SDL_KEYDOWN) {
-                if (event.key.keysym.sym == SDLK_a) {
-                    state.handleAction(Action::LEFT);
-                }
-                if (event.key.keysym.sym == SDLK_d) {
-                    state.handleAction(Action::RIGHT);
-                }
-                if (event.key.keysym.sym == SDLK_n) {
-                    state.handleAction(Action::NEW_GAME);
-                }
-            }
+        }
+        keyboardState = SDL_GetKeyboardState(NULL);
+
+        if (keyboardState[SDL_SCANCODE_D]) {
+            state.handleAction(Action::RIGHT);
+        } else if (keyboardState[SDL_SCANCODE_A]) {
+            state.handleAction(Action::LEFT);
+        } else {
+            state.handleAction(Action::CENTER);
         }
 
         if (SDL_GetTicks() - frametime < minframetime)
