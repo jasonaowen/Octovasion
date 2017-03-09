@@ -89,7 +89,7 @@ int main(int argc, const char * argv[]) {
     int winWidth = 770;
     int winHeight = 640;
 
-    window = SDL_CreateWindow("GIP", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Octovasion", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     const std::string filename = ASSET_DIR "/purplefriend3x.png";

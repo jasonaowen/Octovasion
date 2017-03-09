@@ -1,29 +1,29 @@
 cmake_minimum_required (VERSION 3.2)
-project (GIP CXX)
-add_executable (GIP src/main.cpp
-                    src/GameState.cpp
-                    src/GameState.hpp
+project (Octovasion CXX)
+add_executable (Octovasion src/main.cpp
+                           src/GameState.cpp
+                           src/GameState.hpp
                     )
 add_executable (Test test/catch.cpp
                      src/GameState.cpp
                      src/GameState.hpp
                      test/GameStateTests.cpp
                      )
-target_compile_features (GIP PRIVATE cxx_generalized_initializers
-                                     cxx_range_for
-                                     cxx_strong_enums)
+target_compile_features (Octovasion PRIVATE cxx_generalized_initializers
+                                            cxx_range_for
+                                            cxx_strong_enums)
 target_compile_features (Test PRIVATE cxx_generalized_initializers
                                       cxx_range_for
                                       cxx_strong_enums)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GIP_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${Octovasion_SOURCE_DIR}/cmake")
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIR}
                     ${SDL2_IMAGE_INCLUDE_DIR})
-target_link_libraries(GIP ${SDL2_LIBRARY}
-                    ${SDL2_IMAGE_LIBRARIES})
+target_link_libraries(Octovasion ${SDL2_LIBRARY}
+                                 ${SDL2_IMAGE_LIBRARIES})
 
 include (ExternalProject)
 find_package (Git REQUIRED)
