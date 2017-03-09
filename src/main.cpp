@@ -132,6 +132,14 @@ int main(int argc, const char * argv[]) {
                 gameIsRunning = false;
                 break;
             }
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_a) {
+                    state.handleAction(Action::LEFT);
+                }
+                if (event.key.keysym.sym == SDLK_d) {
+                    state.handleAction(Action::RIGHT);
+                }
+            }
         }
 
         if (SDL_GetTicks() - frametime < minframetime)
