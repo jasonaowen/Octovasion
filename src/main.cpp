@@ -123,6 +123,8 @@ int main(int argc, const char * argv[]) {
     int chance = 2;
     const Uint8 *keyboardState;
 
+    Uint32 prevtick = 0;
+
     while(gameIsRunning)
     {
         Uint32 frametime = SDL_GetTicks();
@@ -134,7 +136,13 @@ int main(int argc, const char * argv[]) {
                 gameIsRunning = false;
                 break;
             }
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_n) {
+                    state.handleAction(Action::NEW_GAME);
+                }
+            }
         }
+
         keyboardState = SDL_GetKeyboardState(NULL);
 
         if (keyboardState[SDL_SCANCODE_D]) {
@@ -145,20 +153,30 @@ int main(int argc, const char * argv[]) {
             state.handleAction(Action::CENTER);
         }
 
+        if (keyboardState[SDL_SCANCODE_L]) {
+            prevtick = SDL_GetTicks();
+            state.handleAction(Action::FIRE_RIGHT_BULLET);
+        } else if (keyboardState[SDL_SCANCODE_J]) {
+            prevtick = SDL_GetTicks();
+            state.handleAction(Action::FIRE_LEFT_BULLET);
+        }
+
+        if (SDL_GetTicks() > prevtick + 5000)
+        {
+            if (frames % 10 == 0)
+            {
+                if (rand() % chance == 0) {
+                    state.handleAction(Action::FIRE_LEFT_BULLET);
+                }
+                if (rand() % chance == 0) {
+                    state.handleAction(Action::FIRE_RIGHT_BULLET);
+                }
+            }
+        }
+
         if (SDL_GetTicks() - frametime < minframetime)
         {
             SDL_Delay(minframetime - (SDL_GetTicks() - frametime));
-        }
-
-        if (frames % 10 == 0)
-        {
-            if (rand() % chance == 0) {
-                state.handleAction(Action::FIRE_LEFT_BULLET);
-            }
-
-            if (rand() % chance == 0) {
-                state.handleAction(Action::FIRE_RIGHT_BULLET);
-            }
         }
 
         if (frames % 5 == 0) {
