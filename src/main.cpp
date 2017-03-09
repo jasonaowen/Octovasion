@@ -125,6 +125,10 @@ int main(int argc, const char * argv[]) {
 
     Uint32 prevtick = 0;
 
+
+    Action platformHeldAction;
+    Action bulletsHeldAction;
+
     while(gameIsRunning)
     {
         Uint32 frametime = SDL_GetTicks();
@@ -140,12 +144,26 @@ int main(int argc, const char * argv[]) {
                 if (event.key.keysym.sym == SDLK_n) {
                     state.handleAction(Action::NEW_GAME);
                 }
+                if (event.key.keysym.sym == SDLK_a) {
+                    platformHeldAction = Action::LEFT;
+                }
+                if (event.key.keysym.sym == SDLK_d) {
+                    platformHeldAction = Action::RIGHT;
+                }
+                if (event.key.keysym.sym == SDLK_j) {
+                    bulletsHeldAction = Action::FIRE_LEFT_BULLET;
+                }
+                if (event.key.keysym.sym == SDLK_l) {
+                    bulletsHeldAction = Action::FIRE_RIGHT_BULLET;
+                }
             }
         }
 
         keyboardState = SDL_GetKeyboardState(NULL);
 
-        if (keyboardState[SDL_SCANCODE_D]) {
+        if (keyboardState[SDL_SCANCODE_D] && keyboardState[SDL_SCANCODE_A]) {
+            state.handleAction(platformHeldAction);
+        } else if (keyboardState[SDL_SCANCODE_D]) {
             state.handleAction(Action::RIGHT);
         } else if (keyboardState[SDL_SCANCODE_A]) {
             state.handleAction(Action::LEFT);
@@ -153,7 +171,10 @@ int main(int argc, const char * argv[]) {
             state.handleAction(Action::CENTER);
         }
 
-        if (keyboardState[SDL_SCANCODE_L]) {
+        if (keyboardState[SDL_SCANCODE_L] && keyboardState[SDL_SCANCODE_J]) {
+            prevtick = SDL_GetTicks();
+            state.handleAction(bulletsHeldAction);
+        } else if (keyboardState[SDL_SCANCODE_L]) {
             prevtick = SDL_GetTicks();
             state.handleAction(Action::FIRE_RIGHT_BULLET);
         } else if (keyboardState[SDL_SCANCODE_J]) {
