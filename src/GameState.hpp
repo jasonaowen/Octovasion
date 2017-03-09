@@ -29,6 +29,7 @@ bool operator==(const Rect& lhs, const Rect& rhs);
 enum class Action {
     NEW_GAME,
     LEFT,
+    CENTER,
     RIGHT,
     FIRE_LEFT_BULLET,
     FIRE_RIGHT_BULLET,

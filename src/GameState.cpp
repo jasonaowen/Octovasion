@@ -48,14 +48,13 @@ void GameState::handleAction(Action action) {
             paddle.y = escapeBoundary();
             break;
         case Action::LEFT:
-            if (paddle.x > 0) {
-                paddle.x--;
-            }
+            paddle.x = leftTentacle.x;
+            break;
+        case Action::CENTER:
+            paddle.x = worldWidth / 2;
             break;
         case Action::RIGHT:
-            if (paddle.x < worldWidth) {
-                paddle.x++;
-            }
+            paddle.x = rightTentacle.x;
             break;
         case Action::FIRE_RIGHT_BULLET:
             fireBullet(rightTentacle);

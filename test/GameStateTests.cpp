@@ -9,42 +9,29 @@
 #include "catch.hpp"
 #include "../src/GameState.hpp"
 
-TEST_CASE("moving left moves left") {
+TEST_CASE("moving left puts paddle in left position") {
     GameState state = GameState(10, 10);
-    Rect initialPaddle = state.paddle;
 
     state.handleAction(Action::LEFT);
 
-    CHECK(initialPaddle.x - 1 == state.paddle.x);
+    CHECK(state.paddle.x == state.leftTentacle.x);
+}
+
+TEST_CASE("choosing no direction puts paddle in center position") {
+    GameState state = GameState(10, 10);
+
+    state.handleAction(Action::CENTER);
+
+    CHECK(state.paddle.x == state.worldWidth / 2);
 }
 
 
-TEST_CASE("moving past wall does not move left") {
+TEST_CASE("moving right puts paddle in right position") {
     GameState state = GameState(10, 10);
-    state.paddle.x = 0;
-
-    state.handleAction(Action::LEFT);
-
-    CHECK(state.paddle.x == 0);
-}
-
-TEST_CASE("moving right moves right") {
-    GameState state = GameState(10, 10);
-    Rect initialPaddle = state.paddle;
 
     state.handleAction(Action::RIGHT);
 
-    CHECK(initialPaddle.x + 1 == state.paddle.x);
-}
-
-
-TEST_CASE("moving past wall does not move right") {
-    GameState state = GameState(10, 10);
-    state.paddle.x = state.worldWidth;
-
-    state.handleAction(Action::RIGHT);
-
-    CHECK(state.paddle.x == state.worldWidth);
+    CHECK(state.paddle.x == state.rightTentacle.x);
 }
 
 TEST_CASE("fire right bullet fires a bullet from the right!!") {
