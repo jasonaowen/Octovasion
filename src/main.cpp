@@ -120,7 +120,7 @@ int main(int argc, const char * argv[]) {
     const Uint32 minframetime = 1000/fps;
 
     Uint32 frames = 0;
-    int chance = 3;
+    int chance = 2;
 
     while(gameIsRunning)
     {
@@ -157,7 +157,7 @@ int main(int argc, const char * argv[]) {
             SDL_Delay(minframetime - (SDL_GetTicks() - frametime));
         }
 
-        if (frames % 40 == 0)
+        if (frames % 10 == 0)
         {
             if (rand() % chance == 0) {
                 state.handleAction(Action::FIRE_LEFT_BULLET);
